@@ -1,0 +1,4 @@
+Django==1.11.8
+heketi==4.0.0
+kubernetes==6.0.0
+openshift==0.5.0

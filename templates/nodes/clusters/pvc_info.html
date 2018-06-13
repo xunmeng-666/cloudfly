@@ -1,0 +1,106 @@
+{% include "bash/base-index.html" %}
+{% block centent %}
+{% load heketi_tags %}
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins" id="all">
+            <div class="quick-actions">
+                <h3 id='cluster'>PVC 信息</h3>
+                <p></p>
+            </div>
+            <hr>
+
+            <table class="table table-bordered"  border="1">
+                <thead >
+                    <tr>
+                        <th >PVC</th>
+                        <th >PV</th>
+                        <th >Pod状态</th>
+                        <th >Size</th>
+                        <th >Access Model</th>
+                        <th >NameSpace</th>
+                        <th >Create Date</th>
+                        <th >Path</th>
+                    </tr>
+                </thead>
+                <tbody id="pod_info">
+                    <form method="post">
+                        {% build_pod_info pod_func volume_name pv_path %}
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="width: 600px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"></h4>
+      </div>
+      <div class="dl-horizontal" data-href-template="horizontal-dl" id="modal-content">
+          <td>数据加载中....</td>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+    $("tbody [id=pvc_name]").each(function () {
+        $(this).on('click',function () {
+{#            清空内容#}
+            $("#myModalLabel").empty();
+            console.log('PVC被点击:',$(this).text());
+            var pvc_name = $(this).text();
+{#            $("#myModalLabel").before('PVC > ',pvc_name,'   Info');#}
+            $("#myModalLabel").append("PVC > ",pvc_name,'    Info')
+            var namespace = $(this).closest('tr').find('td').eq(5).text();
+{#            var pvc_content = document.getElementById('modal-content');#}
+            console.log('namespaces',namespace);
+            console.log('执行ajax');
+            $.ajax({
+                url: '/project_info/?pvc='+namespace+"/"+pvc_name,
+                type:'post',
+                success:function (data) {
+                    addContent(JSON.parse(data));
+
+                }
+            })
+        })
+    });
+    function addContent(data) {
+        console.log('添加内容',data.Labels);
+        console.log('pv', data.access_modes);
+        var finalizers = "[]";
+        if (data.Labels == ''){console.log('data.labels is kong')}
+        $("#modal-content").html("<dl class='dl-horizontal'>" +
+            "<dt>Name:</dt><dd>"+data.Name+"</dd>" +
+            "<dt>NameSpace:</dt><dd>"+data.Namespace+"</dd>"+
+            "<dt>StorageClass:</dt><dd>"+data.StorageClass+"</dd>"+
+            "<dt>Status:</dt><dd>"+data.Status+"</dd>"+
+            "<dt>Volume:</dt><dd>"+data.Volume+"</dd>"+
+            "<dt>Labels:</dt><dd>"+data.Labels+"</dd>"+
+            "<dt>Annotations:</dt><dd>"+data.Annotations[0]+"</dd><dd>"+data.Annotations[1]+"</dd>"+
+            "<dd>"+data.Annotations[2]+"</dd>"+
+            "<dd>"+data.Annotations[3]+"</dd>"+
+            "<dt>Finalizers:</dt><dd>"+finalizers+"</dd>"+
+            "<dt>Capacity:</dt><dd>"+data.Capacity+"</dd>"+
+            "<dt>Access Modes:</dt><dd>"+data.access_modes+"</dd>"+
+            "</dl>")
+
+    }
+
+
+
+
+</script>
+{% endblock %}

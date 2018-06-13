@@ -1,0 +1,31 @@
+{% extends 'bash/base-index.html' %}
+{% block centent %}
+{% load heketi_tags %}
+<div id="content">
+<!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+    </div>
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins" id="all">
+            <div class="quick-actions">
+                {% if model_name == 'heketi_cluster' %}
+                <h3>Heketi Cluster 信息</h3>
+                {% elif model_name == 'heketi_node' %}
+                <h3>Heketi Node 信息</h3>
+                {% endif %}
+                <p></p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div  class="row-fluid">
+            <div  class="span12">
+                <div class="widget-box">
+                    {% build_cluster_info cluster_info model_name%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

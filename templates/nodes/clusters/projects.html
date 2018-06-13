@@ -1,0 +1,31 @@
+{% include "bash/base-index.html" %}
+{% block centent %}
+{% load heketi_tags %}
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins" id="all">
+            <div class="quick-actions">
+                <h3 id='cluster'>项目信息</h3>
+                <p></p>
+            </div>
+            <hr>
+            <table class="table table-bordered"  border="1">
+                <thead >
+                    <tr>
+                        <th >项目名称</th>
+                        <th >Pod 数量</th>
+                    </tr>
+                </thead>
+                <tbody >
+                    {% build_pod_count namespace %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
