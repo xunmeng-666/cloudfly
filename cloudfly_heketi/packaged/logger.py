@@ -6,7 +6,6 @@ from logging import handlers
 from cloudfly_heketi.conf.conf import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print('bash',BASE_DIR)
 def logger(LOG_INFO,LOG_LEVEL=logging.INFO,log_type='Heketi_Log'):
     logger = logging.getLogger(log_type)
     logger.setLevel(LOG_LEVEL)

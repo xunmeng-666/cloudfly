@@ -57,6 +57,9 @@ def build_table_row(row,admin_class,model_name):
 
     return mark_safe(row_ele)
 
+
+
+
 @register.simple_tag
 def build_table_func(row,model_name):
 
@@ -80,7 +83,6 @@ def build_table_func(row,model_name):
 
 @register.simple_tag
 def build_meta_name(admin_class):
-    print('amdin_cluster',admin_class)
     try:
         meta_name = admin_class.model._meta.verbose_name
         if meta_name == '集群':
@@ -99,8 +101,6 @@ def build_meta_name(admin_class):
 
 @register.simple_tag
 def build_cluster_info(cluster_info,model_name):
-    print('model_name',model_name)
-    print('cluster_info',cluster_info)
     ele_th = ""
     for node_k ,node_v in cluster_info.items():
 
@@ -222,7 +222,6 @@ def build_pod_info(pod_func,volume_name,pv_path):
 
 @register.simple_tag
 def build_pvc_info(pvc_info):
-    print('pvc',pvc_info)
     if not pvc_info:
         return mark_safe("")
     else:

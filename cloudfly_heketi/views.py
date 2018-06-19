@@ -2,6 +2,7 @@ from django.shortcuts import render,HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from cloudfly_heketi.admin_base import site
+from cloudfly_heketi.packaged.heketis import Test_Heketi
 from cloudfly_heketi.packaged.heketis import Save_Data
 from cloudfly_heketi.packaged.logger import logger
 from cloudfly_heketi.packaged.openshift import Openshift_info
@@ -90,7 +91,7 @@ def cluster(request):
         logger("获取Cluster列表")
         Save_Data().save_cluster()
         model_name = admin_class.model._meta.model_name
-        logger("Cluster列表获取成功")
+        logger("Cluster列表获取成功".encode('utf-8'))
         querysets, filter_conditions = get_filter_objs(request, admin_class)
         querysets, q_val = get_search_objs(request, querysets, admin_class)
         querysets, new_order_key, order_column, last_orderby_key = get_orderby_objs(request, querysets)
@@ -106,31 +107,32 @@ def cluster(request):
             querysets = paginator.page(paginator.num_pages)
         return render(request, 'nodes/clusters/cluster_list.html', locals())
     elif request.method == 'POST':
-        add_clust = Save_Data().create_cluster()
+        add_clust = Test_Heketi().create_cluster()
         return HttpResponse(json.dumps(add_clust))
 
 
 def info_cluster(request,cid,model_name):
 
     if model_name == 'heketi_cluster':
-        cluster_info = Save_Data().info_cluster(cid)
-        print('cluster_info ',cluster_info)
+        cluster_info = Test_Heketi().info_cluster(cid)
     elif model_name == 'heketi_node':
-        cluster_info = Save_Data().info_node(cid)
+        cluster_info = Test_Heketi().info_node(cid)
     elif model_name == 'heketi_volume':
-        cluster_info = Save_Data().info_volume(cid)
+        cluster_info = Test_Heketi().info_volume(cid)
     return render(request,'nodes/clusters/cluster_info.html',locals())
 
 
 def info_node(request,nid,model_name):
     logger('获取node 信息:%s' %nid  )
-    node_info = Save_Data().info_node(nid.strip())
+    node_info = Test_Heketi().info_node(nid.strip())
     return render(request,'nodes/clusters/cluster_info.html',locals())
 
 @csrf_exempt
 def openshift_project(request):
     if request.method == 'GET':
+        logger('获取Openshift服务器中的项目')
         namespace = Openshift_info().get_namespaces()
+
         return render(request, 'nodes/clusters/projects.html', locals())
     elif request.method == 'POST':
         ns_name = None
