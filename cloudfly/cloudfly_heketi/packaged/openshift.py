@@ -5,8 +5,10 @@ import json
 
 class Openshift_info(OSEnv):
 
-
-    config.load_kube_config()
+    try:
+        config.load_kube_config()
+    except FileNotFoundError:
+        pass
 
     def get_namespaces(self):
         logger('已连接到服务器，正在获取项目列表')
